@@ -12,12 +12,14 @@ import com.seanshubin.webdb.route.DbRoutes.IdRoute
 import com.seanshubin.webdb.route.DbRoutes.NamespaceRoute
 import com.seanshubin.webdb.route.DbRoutes.Root
 import io.ktor.application.Application
+import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.locations.Locations
 import io.ktor.locations.delete
 import io.ktor.locations.get
 import io.ktor.locations.post
+import io.ktor.pipeline.PipelineContext
 import io.ktor.response.respondText
 import io.ktor.routing.routing
 import kotlinx.coroutines.experimental.io.ByteReadChannel
@@ -33,32 +35,36 @@ fun Application.mainModule() {
     install(Locations)
     routing {
         get<Root> {
-            call.respondText("OK")
+            respondText("OK")
         }
         get<NamespaceRoute> { (namespace) ->
             val map: Map<String, String> = db.getAllInNamespace(NamespaceId(namespace)).unbox()
-            call.respondText(mapper.writeValueAsString(map))
+            respondText(mapper.writeValueAsString(map))
         }
         get<IdRoute> { (namespace, id) ->
             val datum = db[NamespaceId(namespace), Id(id)]
-            call.respondText(datum.content)
+            respondText(datum.content)
         }
         post<NamespaceRoute> { (namespace) ->
             val body = readBodyUtf8(call.request.receiveChannel())
             val id = db.create(NamespaceId(namespace), Datum(body))
-            call.respondText(id.value)
+            respondText(id.value)
         }
         post<IdRoute> { (namespace, id) ->
             val body = readBodyUtf8(call.request.receiveChannel())
             db[NamespaceId(namespace), Id(id)] = Datum(body)
-            call.respondText(id)
+            respondText(id)
         }
         delete<IdRoute> { (namespace, id) ->
             db.delete(NamespaceId(namespace), Id(id))
-            call.respondText(id)
+            respondText(id)
         }
     }
 
+}
+
+private suspend fun PipelineContext<Unit, ApplicationCall>.respondText(body: String) {
+    call.respondText(body + "\n")
 }
 
 fun Map<Id, Datum>.unbox(): Map<String, String> =
