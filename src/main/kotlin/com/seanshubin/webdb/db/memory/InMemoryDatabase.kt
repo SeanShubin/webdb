@@ -13,7 +13,7 @@ class InMemoryDatabase() : Database {
     override fun get(namespace: NamespaceId, id: Id): Datum =
             getOrCreateNamespaceData(namespace)[id]
 
-    override fun getAllInNamespace(namespace: NamespaceId): Map<Id, Datum> =
+    override fun getAllInNamespace(namespace: NamespaceId): List<Datum> =
             getOrCreateNamespaceData(namespace).all()
 
     override fun set(namespace: NamespaceId, id: Id, datum: Datum) {

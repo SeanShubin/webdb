@@ -8,6 +8,7 @@
 `gradle build`
 
 ## Running the application
+`gradle jar`
 `java -jar build/libs/webdb-1.0-SNAPSHOT.jar`
 `./test-run.sh` 
 

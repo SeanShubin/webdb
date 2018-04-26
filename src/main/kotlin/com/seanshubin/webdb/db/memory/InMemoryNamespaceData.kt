@@ -10,12 +10,12 @@ class InMemoryNamespaceData(private val namespace: NamespaceId) {
     fun create(datum: Datum): Id {
         lastIdValue++
         val id = Id("${namespace.name}-$lastIdValue")
-        currentData[id] = datum
+        currentData[id] = datum.withId(id.value)
         return id
     }
 
     operator fun get(id: Id): Datum = currentData[id]!!
-    fun all(): Map<Id, Datum> = currentData
+    fun all(): List<Datum> = currentData.keys.sortedWith(compareBy({ it.value })).map { currentData[it]!! }
     operator fun set(id: Id, datum: Datum) {
         currentData[id] = datum
     }
