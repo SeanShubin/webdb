@@ -19,7 +19,11 @@ class InMemoryNamespaceData(private val namespace: NamespaceId) {
     fun all(): List<Datum> = currentData.keys.sortedWith(compareBy({ it.value })).map { currentData[it]!! }
     operator fun set(id: Id, datum: Datum) {
         val oldValue = currentData[id]
-        val newValue = Datum(MapUtil.merge(oldValue, datum.content))
+        val newValue = if (oldValue == null) {
+            datum.withId(id.value)
+        } else {
+            Datum(MapUtil.merge(oldValue.content, datum.content))
+        }
         currentData[id] = newValue
     }
 
