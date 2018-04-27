@@ -3,6 +3,7 @@ package com.seanshubin.webdb.db.memory
 import com.seanshubin.webdb.db.contract.Datum
 import com.seanshubin.webdb.db.contract.Id
 import com.seanshubin.webdb.db.contract.NamespaceId
+import com.seanshubin.webdb.map.MapUtil
 
 class InMemoryNamespaceData(private val namespace: NamespaceId) {
     private var lastIdValue: Int = 0
@@ -17,7 +18,9 @@ class InMemoryNamespaceData(private val namespace: NamespaceId) {
     operator fun get(id: Id): Datum = currentData[id]!!
     fun all(): List<Datum> = currentData.keys.sortedWith(compareBy({ it.value })).map { currentData[it]!! }
     operator fun set(id: Id, datum: Datum) {
-        currentData[id] = datum
+        val oldValue = currentData[id]
+        val newValue = Datum(MapUtil.merge(oldValue, datum.content))
+        currentData[id] = newValue
     }
 
     fun delete(id: Id) {

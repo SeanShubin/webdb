@@ -5,8 +5,7 @@ import com.seanshubin.webdb.db.contract.Id
 import com.seanshubin.webdb.db.contract.NamespaceId
 import com.seanshubin.webdb.db.memory.InMemoryDatabase
 import com.seanshubin.webdb.json.JsonUtil.fromJson
-import com.seanshubin.webdb.json.JsonUtil.listToJson
-import com.seanshubin.webdb.json.JsonUtil.mapToJson
+import com.seanshubin.webdb.json.JsonUtil.toJson
 import com.seanshubin.webdb.route.DbRoutes.IdRoute
 import com.seanshubin.webdb.route.DbRoutes.NamespaceRoute
 import com.seanshubin.webdb.route.DbRoutes.Root
@@ -30,7 +29,6 @@ import java.nio.charset.StandardCharsets
 
 fun Application.mainModule() {
     val db = InMemoryDatabase()
-    val jsonMapClass: Class<Map<String, Any>> = Map::class.java as Class<Map<String, Any>>
     install(Locations)
     //TODO("get rid of this try/catch duplication")
     routing {
@@ -48,8 +46,8 @@ fun Application.mainModule() {
         }
         get<NamespaceRoute> { (namespace) ->
             try {
-                val map: List<Map<String, Any>> = db.getAllInNamespace(NamespaceId(namespace)).unbox()
-                respondText(listToJson(map))
+                val allInNamespace = db.getAllInNamespace(NamespaceId(namespace))
+                respondText(toJson(allInNamespace.unbox()))
             } catch (throwable: Throwable) {
                 val outStream = ByteArrayOutputStream()
                 val printStream = PrintStream(outStream)
@@ -62,7 +60,7 @@ fun Application.mainModule() {
         get<IdRoute> { (namespace, id) ->
             try {
                 val datum = db[NamespaceId(namespace), Id(id)]
-                respondText(mapToJson(datum.content))
+                respondText(toJson(datum.content))
             } catch (throwable: Throwable) {
                 val outStream = ByteArrayOutputStream()
                 val printStream = PrintStream(outStream)
@@ -75,7 +73,7 @@ fun Application.mainModule() {
         post<NamespaceRoute> { (namespace) ->
             try {
                 val body = readBodyUtf8(call.request.receiveChannel())
-                val id = db.create(NamespaceId(namespace), Datum(fromJson(body, jsonMapClass)))
+                val id = db.create(NamespaceId(namespace), Datum(fromJson(body, Object::class.java)))
                 respondText(id.value)
             } catch (throwable: Throwable) {
                 val outStream = ByteArrayOutputStream()
@@ -89,7 +87,7 @@ fun Application.mainModule() {
         post<IdRoute> { (namespace, id) ->
             try {
                 val body = readBodyUtf8(call.request.receiveChannel())
-                db[NamespaceId(namespace), Id(id)] = Datum(fromJson(body, jsonMapClass))
+                db[NamespaceId(namespace), Id(id)] = Datum(fromJson(body, Object::class.java))
                 respondText(id)
             } catch (throwable: Throwable) {
                 val outStream = ByteArrayOutputStream()
@@ -126,8 +124,7 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.respondText(body: Str
     call.respondText(body + "\n", contentType, status)
 }
 
-fun List<Datum>.unbox(): List<Map<String, Any>> =
-        map { value -> value.content }
+fun List<Datum>.unbox(): List<Any?> = this.map { it.content }
 
 suspend fun readBodyUtf8(receiveChannel: ByteReadChannel): String {
     val bytes = mutableListOf<Byte>()
