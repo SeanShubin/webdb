@@ -30,91 +30,61 @@ import java.nio.charset.StandardCharsets
 fun Application.mainModule() {
     val db = InMemoryDatabase()
     install(Locations)
-    //TODO("get rid of this try/catch duplication")
     routing {
         get<Root> {
-            try {
+            handleError {
                 respondText("OK")
-            } catch (throwable: Throwable) {
-                val outStream = ByteArrayOutputStream()
-                val printStream = PrintStream(outStream)
-                throwable.printStackTrace(printStream)
-                val stackTraceAsString = String(outStream.toByteArray())
-                respondText(stackTraceAsString, ContentType.Text.Plain, HttpStatusCode.BadRequest)
-                throwable.printStackTrace()
             }
         }
         get<NamespaceRoute> { (namespace) ->
-            try {
+            handleError {
                 val allInNamespace = db.getAllInNamespace(NamespaceId(namespace))
                 respondText(toJson(allInNamespace.unbox()))
-            } catch (throwable: Throwable) {
-                val outStream = ByteArrayOutputStream()
-                val printStream = PrintStream(outStream)
-                throwable.printStackTrace(printStream)
-                val stackTraceAsString = String(outStream.toByteArray())
-                respondText(stackTraceAsString, ContentType.Text.Plain, HttpStatusCode.BadRequest)
-                throwable.printStackTrace()
             }
         }
         get<IdRoute> { (namespace, id) ->
-            try {
+            handleError {
                 val datum = db[NamespaceId(namespace), Id(id)]
                 respondText(toJson(datum.content))
-            } catch (throwable: Throwable) {
-                val outStream = ByteArrayOutputStream()
-                val printStream = PrintStream(outStream)
-                throwable.printStackTrace(printStream)
-                val stackTraceAsString = String(outStream.toByteArray())
-                respondText(stackTraceAsString, ContentType.Text.Plain, HttpStatusCode.BadRequest)
-                throwable.printStackTrace()
             }
         }
         post<NamespaceRoute> { (namespace) ->
-            try {
+            handleError {
                 val body = readBodyUtf8(call.request.receiveChannel())
                 val id = db.create(NamespaceId(namespace), Datum(fromJson(body, Object::class.java)))
                 respondText(id.value)
-            } catch (throwable: Throwable) {
-                val outStream = ByteArrayOutputStream()
-                val printStream = PrintStream(outStream)
-                throwable.printStackTrace(printStream)
-                val stackTraceAsString = String(outStream.toByteArray())
-                respondText(stackTraceAsString, ContentType.Text.Plain, HttpStatusCode.BadRequest)
-                throwable.printStackTrace()
             }
         }
         post<IdRoute> { (namespace, id) ->
-            try {
+            handleError {
                 val body = readBodyUtf8(call.request.receiveChannel())
                 db[NamespaceId(namespace), Id(id)] = Datum(fromJson(body, Object::class.java))
                 respondText(id)
-            } catch (throwable: Throwable) {
-                val outStream = ByteArrayOutputStream()
-                val printStream = PrintStream(outStream)
-                throwable.printStackTrace(printStream)
-                val stackTraceAsString = String(outStream.toByteArray())
-                respondText(stackTraceAsString, ContentType.Text.Plain, HttpStatusCode.BadRequest)
-                throwable.printStackTrace()
             }
         }
         delete<IdRoute> { (namespace, id) ->
-            try {
+            handleError {
                 db.delete(NamespaceId(namespace), Id(id))
                 respondText(id)
-            } catch (throwable: Throwable) {
-                val outStream = ByteArrayOutputStream()
-                val printStream = PrintStream(outStream)
-                throwable.printStackTrace(printStream)
-                val stackTraceAsString = String(outStream.toByteArray())
-                respondText(stackTraceAsString, ContentType.Text.Plain, HttpStatusCode.BadRequest)
-                throwable.printStackTrace()
             }
         }
     }
 
 }
 
+private suspend fun PipelineContext<Unit, ApplicationCall>.handleError(block: suspend () -> Unit) {
+    try {
+        block()
+    } catch (throwable: Throwable) {
+        val outStream = ByteArrayOutputStream()
+        val printStream = PrintStream(outStream)
+        throwable.printStackTrace(printStream)
+        val stackTraceAsString = String(outStream.toByteArray())
+        respondText(stackTraceAsString, ContentType.Text.Plain, HttpStatusCode.BadRequest)
+        throwable.printStackTrace()
+    }
+
+}
 
 private suspend fun PipelineContext<Unit, ApplicationCall>.respondText(body: String) {
     respondText(body, ContentType.Text.Plain, HttpStatusCode.OK)
