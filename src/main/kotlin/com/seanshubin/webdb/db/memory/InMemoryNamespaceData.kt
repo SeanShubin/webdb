@@ -7,16 +7,18 @@ import com.seanshubin.webdb.map.MapUtil
 
 class InMemoryNamespaceData(private val namespace: NamespaceId) {
     private var lastIdValue: Int = 0
+    private val keyOrder: MutableList<Id> = mutableListOf()
     private val currentData: MutableMap<Id, Datum> = mutableMapOf()
     fun create(datum: Datum): Id {
         lastIdValue++
         val id = Id("${namespace.name}-$lastIdValue")
+        keyOrder.add(id)
         currentData[id] = datum.withId(id.value)
         return id
     }
 
     operator fun get(id: Id): Datum = currentData[id]!!
-    fun all(): List<Datum> = currentData.keys.sortedWith(compareBy({ it.value })).map { currentData[it]!! }
+    fun all(): List<Datum> = keyOrder.map { currentData[it]!! }
     operator fun set(id: Id, datum: Datum) {
         val oldValue = currentData[id]
         val newValue = if (oldValue == null) {
@@ -28,6 +30,7 @@ class InMemoryNamespaceData(private val namespace: NamespaceId) {
     }
 
     fun delete(id: Id) {
+        keyOrder.remove(id)
         currentData.remove(id)
     }
 }
