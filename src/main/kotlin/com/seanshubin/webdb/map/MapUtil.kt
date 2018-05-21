@@ -8,11 +8,11 @@ object MapUtil {
         }
     }
 
-    fun mergeMaps(aMap: Map<*, *>, bMap: Map<*, *>): Map<*, *> {
+    private fun mergeMaps(aMap: Map<*, *>, bMap: Map<*, *>): Map<*, *> {
         return bMap.entries.fold(aMap, { a, b -> mergeEntry(a, b) })
     }
 
-    fun mergeEntry(aMap: Map<*, *>, bEntry: Map.Entry<*, *>): Map<*, *> {
+    private fun mergeEntry(aMap: Map<*, *>, bEntry: Map.Entry<*, *>): Map<*, *> {
         val (bKey, bValue) = bEntry
         return if (bValue == null) {
             aMap - bKey
