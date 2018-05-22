@@ -1,17 +1,22 @@
 # Web Database
 
-## Running the tests
-- still in prototyping mode, no tests yet
-
-## Deploying the application
-
-`gradle build`
-
 ## Running the application
 
     gradle jar
     java -jar build/libs/webdb-1.0-SNAPSHOT.jar
+
+## Running the tests
+- still in prototyping mode, no tests yet
+
+## Populating with test data
+
+Run the application, then
+
     ./test-run.sh
+
+## Deploying the application
+
+`gradle build`
 
 You should get the following output
 
