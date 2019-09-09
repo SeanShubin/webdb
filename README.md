@@ -2,21 +2,18 @@
 
 ## Running the application
 
-    gradle jar
-    java -jar build/libs/webdb-1.0-SNAPSHOT.jar
+    mvn clean
+    mvn verify
+    java -jar console/target/webdb.jar 8080
 
 ## Running the tests
 - still in prototyping mode, no tests yet
 
-## Populating with test data
+## Verifying the application
 
 Run the application, then
 
-    ./test-run.sh
-
-## Deploying the application
-
-`gradle build`
+    ./test-run.sh 
 
 You should get the following output
 
@@ -58,6 +55,3 @@ You should get the following output
       "complete" : true,
       "id" : "task-5"
     } ]
-
-## How this application was created
-- did not use tooling, created everything manually starting with the build.gradle file
