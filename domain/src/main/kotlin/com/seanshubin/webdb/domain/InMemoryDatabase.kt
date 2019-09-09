@@ -1,9 +1,4 @@
-package com.seanshubin.webdb.domain.db.memory
-
-import com.seanshubin.webdb.domain.db.contract.Database
-import com.seanshubin.webdb.domain.db.contract.Datum
-import com.seanshubin.webdb.domain.db.contract.Id
-import com.seanshubin.webdb.domain.db.contract.NamespaceId
+package com.seanshubin.webdb.domain
 
 class InMemoryDatabase() : Database {
     private val namespaces: MutableMap<NamespaceId, InMemoryNamespaceData> = mutableMapOf()

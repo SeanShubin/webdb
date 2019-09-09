@@ -1,4 +1,4 @@
-package com.seanshubin.webdb.domain.route
+package com.seanshubin.webdb.domain
 
 import io.ktor.locations.Location
 

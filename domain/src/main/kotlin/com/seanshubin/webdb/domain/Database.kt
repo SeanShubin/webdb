@@ -1,4 +1,4 @@
-package com.seanshubin.webdb.domain.db.contract
+package com.seanshubin.webdb.domain
 
 interface Database {
     fun create(namespace: NamespaceId, datum: Datum): Id

@@ -1,10 +1,9 @@
-package com.seanshubin.webdb.domain.json
+package com.seanshubin.webdb.domain
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
-import com.seanshubin.webdb.domain.map.MapUtil
 
 object JsonUtil {
     private val mapper = ObjectMapper()
@@ -34,8 +33,8 @@ object JsonUtil {
     }
 
     fun mergeJsonStrings(a: String, b: String): String {
-        val aObject = JsonUtil.fromJson(a, Object::class.java)
-        val bObject = JsonUtil.fromJson(b, Object::class.java)
+        val aObject = fromJson(a, Object::class.java)
+        val bObject = fromJson(b, Object::class.java)
         val cObject = MapUtil.merge(aObject, bObject)
         return toJson(cObject)
     }

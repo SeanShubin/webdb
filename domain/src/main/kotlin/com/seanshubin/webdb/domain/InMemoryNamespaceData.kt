@@ -1,9 +1,4 @@
-package com.seanshubin.webdb.domain.db.memory
-
-import com.seanshubin.webdb.domain.db.contract.Datum
-import com.seanshubin.webdb.domain.db.contract.Id
-import com.seanshubin.webdb.domain.db.contract.NamespaceId
-import com.seanshubin.webdb.domain.map.MapUtil
+package com.seanshubin.webdb.domain
 
 class InMemoryNamespaceData(private val namespace: NamespaceId) {
     private var lastIdValue: Int = 0

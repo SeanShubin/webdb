@@ -1,8 +1,8 @@
 package com.seanshubin.webdb.domain
 
-import com.seanshubin.webdb.domain.json.JsonUtil.mergeJsonStrings
-import com.seanshubin.webdb.domain.json.JsonUtil.normalize
-import org.junit.Test
+import com.seanshubin.webdb.domain.JsonUtil.mergeJsonStrings
+import com.seanshubin.webdb.domain.JsonUtil.normalize
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class MapUtilTest {

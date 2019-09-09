@@ -1,14 +1,14 @@
 package com.seanshubin.webdb.console
 
-import com.seanshubin.webdb.domain.db.contract.Datum
-import com.seanshubin.webdb.domain.db.contract.Id
-import com.seanshubin.webdb.domain.db.contract.NamespaceId
-import com.seanshubin.webdb.domain.db.memory.InMemoryDatabase
-import com.seanshubin.webdb.domain.json.JsonUtil.fromJson
-import com.seanshubin.webdb.domain.json.JsonUtil.toJson
-import com.seanshubin.webdb.domain.route.DbRoutes.IdRoute
-import com.seanshubin.webdb.domain.route.DbRoutes.NamespaceRoute
-import com.seanshubin.webdb.domain.route.DbRoutes.Root
+import com.seanshubin.webdb.domain.Datum
+import com.seanshubin.webdb.domain.Id
+import com.seanshubin.webdb.domain.NamespaceId
+import com.seanshubin.webdb.domain.InMemoryDatabase
+import com.seanshubin.webdb.domain.JsonUtil.fromJson
+import com.seanshubin.webdb.domain.JsonUtil.toJson
+import com.seanshubin.webdb.domain.DbRoutes.IdRoute
+import com.seanshubin.webdb.domain.DbRoutes.NamespaceRoute
+import com.seanshubin.webdb.domain.DbRoutes.Root
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call

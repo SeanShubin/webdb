@@ -1,4 +1,4 @@
-package com.seanshubin.webdb.domain.map
+package com.seanshubin.webdb.domain
 
 object MapUtil {
     fun merge(aObject: Any?, bObject: Any?): Any? {
