@@ -13,7 +13,7 @@
 
 Run the application, then
 
-    ./test-run.sh 
+    ./sample-data.sh 
 
 You should get the following output
 

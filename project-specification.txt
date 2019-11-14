@@ -40,7 +40,7 @@
     console [domain]
   }
   consoleEntryPoint {
-    console com.seanshubin.webdb.console.MainKt
+    console com.seanshubin.webdb.console.Main
   }
   detangler [domain]
 }
